@@ -5,8 +5,7 @@ import Offers from "./Pages/Offers";
 import Profile from "./Pages/Profile";
 import SignIn from "./Pages/SignIn";
 import SignUp from "./Pages/SignUp";
-
-
+import Header from "./components/Header";
 
 
 function App() {
@@ -14,16 +13,15 @@ function App() {
     <div className="App">
 
       <Router>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/offers" element={<Offers />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/sign-in" element={<SignIn />} />
-          <Route path="/sign-up" element={<SignUp/>} />
-          
-        </Routes>
-
+        <Header />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/offers" element={<Offers />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/sign-in" element={<SignIn />} />
+            <Route path="/sign-up" element={<SignUp/>} />            
+          </Routes>
       </Router>
 
     </div>
