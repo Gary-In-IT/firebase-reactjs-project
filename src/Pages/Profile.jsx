@@ -106,13 +106,16 @@ export default function Profile() {
 
           <button type="submit" className="w-full bg-blue-700 text-white uppercase px-7 py-3 text-sm font-medium rounded shadow-md hover:bg-blue-800 transition duration-150 ease-in-out hover:shadow-lg active:bg-blue-900 ">
 
-            <Link to="/CreateListing" className="flex justify-center items-center ">
+            <Link to="/create-listing" className="flex justify-center items-center ">
               <FcMoneyTransfer className="mr-2 text-4xl rounded-full p-1 border-2"/>
-              Ready to Buy, Sell, or Trade your Stuff?
+              Ready to Buy, Sell or Trade?
             </Link>   
-          </button>
+          </button>          
+
 
         </div>
+
+
       </section>
     </>
   );
