@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { getAuth, updateProfile } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from './../firebase';
+import { FcMoneyTransfer } from 'react-icons/fc';
 
 export default function Profile() {
   const auth = getAuth();
@@ -88,9 +89,6 @@ export default function Profile() {
                     changeProfile && onSubmit()
                     setChangeProfile((prevState) => !prevState);
                   }}  
-                  
-
-
                   className="text-red-500 hover:text-red-700 transition ease-in-out duration-200 ml-1 cursor-pointer"
                 >
                   {changeProfile ? "Apply Change" : "Edit"}
@@ -105,6 +103,15 @@ export default function Profile() {
               </p>
             </div>
           </form>
+
+          <button type="submit" className="w-full bg-blue-700 text-white uppercase px-7 py-3 text-sm font-medium rounded shadow-md hover:bg-blue-800 transition duration-150 ease-in-out hover:shadow-lg active:bg-blue-900 ">
+
+            <Link to="/CreateListing" className="flex justify-center items-center ">
+              <FcMoneyTransfer className="mr-2 text-4xl rounded-full p-1 border-2"/>
+              Ready to Buy, Sell, or Trade your Stuff?
+            </Link>   
+          </button>
+
         </div>
       </section>
     </>
