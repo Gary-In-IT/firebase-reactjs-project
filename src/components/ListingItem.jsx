@@ -1,10 +1,12 @@
 import Moment from "react-moment";
 import { Link } from "react-router-dom";
+import { FaTrash } from "react-icons/fa";
+import { MdModeEdit } from "react-icons/md";
 
 
 
 
-export default function ListingItem({listing, id }) {
+export default function ListingItem({listing, id, onEdit, onDelete }) {
   return (
     
     <li className="relative bg-white flex flex-col justify-between items-center shadow-md hover:shadow-xl rounded-md overflow-hidden transition-shadow duration-150 m-[10px]">
@@ -39,6 +41,14 @@ export default function ListingItem({listing, id }) {
           {listing.type === "rent" && " / month"}
         </p>
       </Link>
+      {onEdit && (
+       <MdModeEdit className="absolute bottom-2 right-7 h-4 cursor-pointer text-red-500 "
+        onClick={() => onEdit(listing.id)} />        
+        )}
+        {onDelete && (
+       <FaTrash className="absolute bottom-2 right-2 h-[14px] cursor-pointer text-red-500 "
+        onClick={() => onDelete(listing.id)} />        
+        )}
     </li>
   )
 }
