@@ -11,6 +11,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import EditListing from "./Pages/EditListing";
+import Listing from "./Pages/Listing";
 
 
 
@@ -25,6 +26,11 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/offers" element={<Offers />} />
 
+            <Route path="/sign-in" element={<SignIn />} />
+            <Route path="/sign-up" element={<SignUp/>} />
+            <Route path="/category/:categoryName/:listingId" element={<Listing/>} />
+            
+
             <Route path="/profile" element={<PrivateRoute />}>
               <Route path="/profile" element={<Profile />} />              
             </Route>
@@ -35,10 +41,8 @@ function App() {
 
             <Route path="edit-listing" element={<PrivateRoute />}>
               <Route path="/edit-listing:listingId" element={<EditListing/>} /> 
-            </Route>
+            </Route> 
             
-            <Route path="/sign-in" element={<SignIn />} />
-            <Route path="/sign-up" element={<SignUp/>} />
                        
           </Routes>
           
@@ -46,7 +50,7 @@ function App() {
 
       <ToastContainer
         position="bottom-center"
-        autoClose={1500}
+        autoClose={800}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
