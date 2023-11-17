@@ -21,8 +21,8 @@ import {
   FaChair,
 } from "react-icons/fa";
 import { getAuth } from "firebase/auth";
-// import Contact from "../components/Contact";
-// import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import Contact from "../components/Contact";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 
 export default function Listing() {
   const auth = getAuth();
@@ -146,11 +146,11 @@ export default function Listing() {
             </div>
           )}
           {contactLandlord && (
-            {/* <Contact userRef={listing.userRef} listing={listing} /> */}
+            <Contact userRef={listing.userRef} listing={listing} />
           )}
         </div>
         <div className="w-full h-[200px] md:h-[400px] z-10 overflow-x-hidden mt-6 md:mt-0 md:ml-2">
-          {/* <MapContainer
+          <MapContainer
             center={[listing.geolocation.lat, listing.geolocation.lng]}
             zoom={13}
             scrollWheelZoom={false}
@@ -167,7 +167,7 @@ export default function Listing() {
                 {listing.address}
               </Popup>
             </Marker>
-          </MapContainer> */}
+          </MapContainer>
         </div>
       </div>
     </main>

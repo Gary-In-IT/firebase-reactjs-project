@@ -1,13 +1,25 @@
-
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Spinner from "../components/Spinner";
 import { toast } from "react-toastify";
-import { getStorage, ref, uploadBytesResumable, getDownloadURL,} from "firebase/storage";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
 import { getAuth } from "firebase/auth";
 import { v4 as uuidv4 } from "uuid";
-import { addDoc, collection, doc, getDoc, updateDoc, serverTimestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../firebase";
 import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function CreateListing() {
   const navigate = useNavigate();
@@ -15,10 +27,13 @@ export default function CreateListing() {
   const [geolocationEnabled, setGeolocationEnabled] = useState(true);
   const [loading, setLoading] = useState(false);
   const [listing, setListing] = useState(null);
-
   const [formData, setFormData] = useState({
     type: "rent",
     name: "",
+    bedrooms: 1,
+    bathrooms: 1,
+    parking: false,
+    furnished: false,
     address: "",
     description: "",
     offer: false,
@@ -28,11 +43,24 @@ export default function CreateListing() {
     longitude: 0,
     images: {},
   });
-
-  const { type, name, address, description, offer, regularPrice, discountedPrice, latitude, longitude, images, } = formData;
+  const {
+    type,
+    name,
+    bedrooms,
+    bathrooms,
+    parking,
+    address,
+    furnished,
+    description,
+    offer,
+    regularPrice,
+    discountedPrice,
+    latitude,
+    longitude,
+    images,
+  } = formData;
 
   const params = useParams();
-
 
   useEffect(() => {
     if (listing && listing.userRef !== auth.currentUser.uid) {
@@ -41,25 +69,22 @@ export default function CreateListing() {
     }
   }, [auth.currentUser.uid, listing, navigate]);
 
-
-
   useEffect(() => {
     setLoading(true);
     async function fetchListing() {
-        const docRef = doc(db, "listings", params.listingId);
-        const docSnap = await getDoc(docRef);
-        if(docSnap.exists()) {
-            setListing(docSnap.data());
-            setFormData({...docSnap.data()})
-            setLoading(false);
-        }else {
-            navigate("/")
-            toast.error("Listing not found")
-        }
+      const docRef = doc(db, "listings", params.listingId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setListing(docSnap.data());
+        setFormData({ ...docSnap.data() });
+        setLoading(false);
+      } else {
+        navigate("/");
+        toast.error("Listing does not exist");
+      }
     }
     fetchListing();
-  }, [navigate, params.listingId])
-
+  }, [navigate, params.listingId]);
 
   function onChange(e) {
     let boolean = null;
@@ -84,8 +109,6 @@ export default function CreateListing() {
       }));
     }
   }
-
-
   async function onSubmit(e) {
     e.preventDefault();
     setLoading(true);
@@ -131,20 +154,27 @@ export default function CreateListing() {
         uploadTask.on(
           "state_changed",
           (snapshot) => {
+            // Observe state change events such as progress, pause, and resume
+            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
             const progress =
               (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
             console.log("Upload is " + progress + "% done");
             switch (snapshot.state) {
-              case "paused":                
+              case "paused":
+                console.log("Upload is paused");
                 break;
-              case "running":                
+              case "running":
+                console.log("Upload is running");
                 break;
             }
           },
-          (error) => {            
+          (error) => {
+            // Handle unsuccessful uploads
             reject(error);
           },
-          () => {            
+          () => {
+            // Handle successful uploads on complete
+            // For instance, get the download URL: https://firebasestorage.googleapis.com/...
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
               resolve(downloadURL);
             });
@@ -172,24 +202,20 @@ export default function CreateListing() {
     !formDataCopy.offer && delete formDataCopy.discountedPrice;
     delete formDataCopy.latitude;
     delete formDataCopy.longitude;
-    const docRef = doc(db, "listings", params.listingId)
-    
-    await updateDoc(docRef, formDataCopy);
+    const docRef = doc(db, "listings", params.listingId);
 
+    await updateDoc(docRef, formDataCopy);
     setLoading(false);
-    toast.success("Listing edited");
+    toast.success("Listing Edited");
     navigate(`/category/${formDataCopy.type}/${docRef.id}`);
   }
-
 
   if (loading) {
     return <Spinner />;
   }
-
-
   return (
     <main className="max-w-md px-2 mx-auto">
-      <h1 className="text-3xl text-center mt-6 font-bold">Edit Your Listing</h1>
+      <h1 className="text-3xl text-center mt-6 font-bold">Edit Listing</h1>
       <form onSubmit={onSubmit}>
         <p className="text-lg mt-6 font-semibold">Sell / Rent</p>
         <div className="flex">
@@ -232,7 +258,84 @@ export default function CreateListing() {
           required
           className="w-full px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition duration-150 ease-in-out focus:text-gray-700 focus:bg-white focus:border-slate-600 mb-6"
         />
-        
+        <div className="flex space-x-6 mb-6">
+          <div>
+            <p className="text-lg font-semibold">Beds</p>
+            <input
+              type="number"
+              id="bedrooms"
+              value={bedrooms}
+              onChange={onChange}
+              min="1"
+              max="50"
+              required
+              className="w-full px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition duration-150 ease-in-out focus:text-gray-700 focus:bg-white focus:border-slate-600 text-center"
+            />
+          </div>
+          <div>
+            <p className="text-lg font-semibold">Baths</p>
+            <input
+              type="number"
+              id="bathrooms"
+              value={bathrooms}
+              onChange={onChange}
+              min="1"
+              max="50"
+              required
+              className="w-full px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition duration-150 ease-in-out focus:text-gray-700 focus:bg-white focus:border-slate-600 text-center"
+            />
+          </div>
+        </div>
+        <p className="text-lg mt-6 font-semibold">Parking spot</p>
+        <div className="flex">
+          <button
+            type="button"
+            id="parking"
+            value={true}
+            onClick={onChange}
+            className={`mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
+              !parking ? "bg-white text-black" : "bg-slate-600 text-white"
+            }`}
+          >
+            Yes
+          </button>
+          <button
+            type="button"
+            id="parking"
+            value={false}
+            onClick={onChange}
+            className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
+              parking ? "bg-white text-black" : "bg-slate-600 text-white"
+            }`}
+          >
+            no
+          </button>
+        </div>
+        <p className="text-lg mt-6 font-semibold">Furnished</p>
+        <div className="flex">
+          <button
+            type="button"
+            id="furnished"
+            value={true}
+            onClick={onChange}
+            className={`mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
+              !furnished ? "bg-white text-black" : "bg-slate-600 text-white"
+            }`}
+          >
+            yes
+          </button>
+          <button
+            type="button"
+            id="furnished"
+            value={false}
+            onClick={onChange}
+            className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
+              furnished ? "bg-white text-black" : "bg-slate-600 text-white"
+            }`}
+          >
+            no
+          </button>
+        </div>
         <p className="text-lg mt-6 font-semibold">Address</p>
         <textarea
           type="text"
@@ -375,7 +478,7 @@ export default function CreateListing() {
           type="submit"
           className="mb-6 w-full px-7 py-3 bg-blue-600 text-white font-medium text-sm uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
         >
-          Publish your edited listing
+          Edit Listing
         </button>
       </form>
     </main>
