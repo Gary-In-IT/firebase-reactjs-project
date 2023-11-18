@@ -3,7 +3,7 @@ import { getAuth, updateProfile } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { collection, doc, getDocs, orderBy, query, updateDoc, where, deleteDoc } from 'firebase/firestore';
-import { db } from './../firebase';
+import { db } from '../firebase';
 import { FcMoneyTransfer } from 'react-icons/fc';
 import ListingItem from "../components/ListingItem";
 
